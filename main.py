@@ -14,10 +14,13 @@ from datetime import datetime, timezone
 app = FastAPI()
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
+AIPIPE_TOKEN = os.environ.get("AIPIPE_TOKEN", "")
 BASE_URL = os.environ.get("BASE_URL", "http://localhost:8000")
 
-client = OpenAI(api_key=OPENAI_API_KEY)
+client = OpenAI(
+    api_key=AIPIPE_TOKEN,
+    base_url="https://aipipe.org/openrouter/v1"
+)
 LOG_FILE = "run.jsonl"
 TELEGRAM_API = f"https://api.telegram.org/bot{BOT_TOKEN}"
 
@@ -107,7 +110,7 @@ def process_message(chat_id, text):
             
         try:
             response = client.chat.completions.create(
-                model="gpt-4o",
+                model="openai/gpt-4o",
                 messages=messages,
                 tools=tools,
                 temperature=0.0
